@@ -26,8 +26,7 @@ python main.py
 ```
 
 ## Notes
-- Use only NLLLoss because R-LLGMN output is like softmax.
-- I think processing speed would be able to be faster, because the cell needs for loop.
+- Use only NLLLoss because LLGMN output is like softmax.
 - Please tell me, if you find any bug.
 - I checked this code work on Win10 and Ubuntu18.04. Sorry I don't have Mac.
 
