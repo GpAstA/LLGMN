@@ -1,4 +1,4 @@
-# R-LLGMN for PyTorch
+# LLGMN for PyTorch
 By Yuki Hashimoto
 
 ## [A log-linearized Gaussian mixture network and its application to EEG pattern classification](https://ieeexplore.ieee.org/abstract/document/740670)
