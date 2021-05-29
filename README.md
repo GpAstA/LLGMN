@@ -10,7 +10,7 @@ LLGMN layer for PyTorch.<br>
 ## Getting Started 
 Clone repository:
 ```
-git clone
+git clone "https://github.com/uoNuM/LLGMN.git"
 ```
 Install [PyTorch](https://pytorch.org/get-started/locally/) and dependencies:
 ```
