@@ -1,16 +1,43 @@
-from data_processing.data_loader import load_data
-from utils.utils import train_and_evaluate
+import torch.optim as optim
+import torch.nn as nn
+from torch.utils.data import TensorDataset, DataLoader
+import torch
+from model.LLGMN import LLGMN
+from train import train_model
+import optuna
+from objective import objective
 
-# パラメータ設定
-n_class = 2
-n_component = 2
-n_epoch = 100
-K = 5
-acc_thr = 0.5
-target = r'C:\Users\ME-PC2\LLGMN-pytorch\LLGMN\input\230127_ATAL_all_嚥下障害有無_cFIM_mFIM.csv'
 
-if __name__ == "__main__":
-    x, y = load_data(target)
-    input_dim = x.shape[1]
+
+def main():
+    # fix seed and device
+    torch.manual_seed(0)
+    torch.cuda.manual_seed_all(0)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = True
+
+    # set each parameter 
+    in_features = 5
+    n_class = 2
+    n_component = 3
+    n_epoch = 30
+    batch_size = 32
+
+    # generate datas
+    x_train = torch.randn(100, 5)
+    x_train[0:50, :] += 2
+    y_train = torch.ones((100), dtype=int)
+    y_train[0:50] -= 1
+
+    # make dataset
+    train_dataset = TensorDataset(x_train, y_train)
+
+    # make dataloader
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+
     
-    train_and_evaluate(x, y, input_dim, n_class, n_component, n_epoch, K, acc_thr)
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials=50)
+
+if __name__ == '__main__':
+    main()

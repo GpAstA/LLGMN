@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import StratifiedKFold
 from data_processing.preprocessing import standardize, convert_labels
-from model.model import build_model
+from model.elasticnet_reducer import build_model
 
 def train_and_evaluate(x, y, input_dim, n_class, n_component, n_epoch, K, acc_thr):
     skf = StratifiedKFold(n_splits=K, random_state=0, shuffle=True)
