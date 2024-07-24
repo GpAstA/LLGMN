@@ -1,10 +1,8 @@
-import torch.optim as optim
-import torch.nn as nn
-from torch.utils.data import TensorDataset, DataLoader
 import torch
-from model.LLGMN import LLGMN
+from torch.utils.data import DataLoader
 import optuna
 from objective import objective
+from data_processing.data_loader import load_data
 
 def main():
     # fix seed and device
@@ -13,32 +11,26 @@ def main():
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
 
-    # set each parameter 
-    in_features = 5
-    n_class = 2
+    # set each parameter
     n_component = 3
-    n_epoch = 30
+    n_epoch = 100
     batch_size = 32
+    csv_file = 'LLGMN/input/230127_ATAL_all_嚥下障害有無_cFIM_mFIM.csv'  # CSVファイルのパスを指定
 
-    # generate datas
-    x_train = torch.randn(100, in_features)
-    x_train[0:50, :] += 2
-    y_train = torch.ones((100), dtype=int)
-    y_train[0:50] -= 1
-
-    # make dataset
-    train_dataset = TensorDataset(x_train, y_train)
+    # load data
+    train_dataset, in_features, n_class = load_data(csv_file)
 
     # make dataloader
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(lambda trial: objective(trial, train_dataloader, in_features, n_class, n_component, n_epoch), n_trials=50)
 
     # 最適なハイパーパラメータの表示
     print('Best trial:')
     trial = study.best_trial
     print(f'  Value: {trial.value}')
+    print(f'  Accuracy: {trial.user_attrs["accuracy"]}%')
     print('  Params: ')
     for key, value in trial.params.items():
         print(f'    {key}: {value}')
