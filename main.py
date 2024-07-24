@@ -15,22 +15,14 @@ def main():
     n_component = 3
     n_epoch = 100
     batch_size = 32
+    n_splits = 5
     csv_file = 'LLGMN/input/230127_ATAL_all_嚥下障害有無_cFIM_mFIM.csv'  # CSVファイルのパスを指定
 
     # load data
     dataset, in_features, n_class = load_data(csv_file)
-
-    # split data into training and testing sets
-    train_size = int(0.8 * len(dataset))
-    test_size = len(dataset) - train_size
-    train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
-
-    # make dataloaders
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     
     study = optuna.create_study(direction='minimize')
-    study.optimize(lambda trial: objective(trial, train_dataloader, test_dataloader, in_features, n_class, n_component, n_epoch), n_trials=50)
+    study.optimize(lambda trial: objective(trial, dataset, in_features, n_class, n_component, n_epoch, n_splits), n_trials=50)
 
 
     # 最適なハイパーパラメータの表示
