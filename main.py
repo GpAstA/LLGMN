@@ -3,11 +3,8 @@ import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 import torch
 from model.LLGMN import LLGMN
-from train import train_model
 import optuna
 from objective import objective
-
-
 
 def main():
     # fix seed and device
@@ -24,7 +21,7 @@ def main():
     batch_size = 32
 
     # generate datas
-    x_train = torch.randn(100, 5)
+    x_train = torch.randn(100, in_features)
     x_train[0:50, :] += 2
     y_train = torch.ones((100), dtype=int)
     y_train[0:50] -= 1
@@ -34,10 +31,17 @@ def main():
 
     # make dataloader
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-
     
     study = optuna.create_study(direction='minimize')
     study.optimize(objective, n_trials=50)
+
+    # 最適なハイパーパラメータの表示
+    print('Best trial:')
+    trial = study.best_trial
+    print(f'  Value: {trial.value}')
+    print('  Params: ')
+    for key, value in trial.params.items():
+        print(f'    {key}: {value}')
 
 if __name__ == '__main__':
     main()
