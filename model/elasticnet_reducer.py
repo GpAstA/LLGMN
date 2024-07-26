@@ -17,7 +17,7 @@ class ElasticNetDimensionReducer(nn.Module):
         l2_penalty = torch.sum(torch.square(self.dense.weight))
         return self.alpha * (self.l1_ratio * l1_penalty + (1 - self.l1_ratio) * l2_penalty)
 
-    def reduce_dimension(self, threshold=1e-5):
+    def reduce_dimension(self, threshold=1e-3):
         with torch.no_grad():
             weight_magnitudes = torch.abs(self.dense.weight).sum(dim=1)
             important_indices = weight_magnitudes > threshold

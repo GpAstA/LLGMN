@@ -14,7 +14,7 @@ def main():
 
     # set each parameter
     n_component = 3
-    n_epoch = 40
+    n_epoch = 100
     n_splits = 5
     n_trials = 5
     csv_file = 'LLGMN/input/230127_ATAL_all_嚥下障害有無_cFIM_mFIM.csv'  # CSVファイルのパスを指定
@@ -39,7 +39,14 @@ def main():
     best_l1_ratio = trial.params['l1_ratio']
     best_lr = trial.params['lr']
 
-    training_and_evaluation(csv_file, dataset, in_features, n_class, n_component, best_alpha, best_l1_ratio, best_lr, n_epoch, n_splits)
+    best_params = []
+    accuracies = []
+
+    for trial in study.trials:
+        best_params.append(trial.params)
+        accuracies.append(trial.value)
+
+    training_and_evaluation(csv_file, dataset, in_features, n_class, n_component, best_alpha, best_l1_ratio, best_lr, n_epoch, n_splits, best_params, accuracies)
 
 if __name__ == '__main__':
     main()
